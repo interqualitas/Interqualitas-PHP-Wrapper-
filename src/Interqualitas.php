@@ -150,8 +150,19 @@ class Interqualitas {
         $url = $this->endPoint . '/' . $modulePath;
         $params['access_token'] = $this->token;
         $url .= '?' . http_build_query($params);
-        $response = file_get_contents($url, false, $context);
-        return $response;
+        # initialise the CURL library
+        $ch = curl_init();
+        # specify the URL to be retrieved
+        curl_setopt($ch, CURLOPT_URL, $url);
+        # we want to get the contents of the URL and store it in a variable
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        # ignore SSL errors
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        $result = curl_exec($ch);
+        # free resources
+        curl_close($ch);
+        # send back the data
+        return $result;
     }
 
     /**
